@@ -19,12 +19,13 @@ export const constantRouterMap = [
   { path: '/login', component: _import('login/index'), hidden: true },
   { path: '/404', component: _import('404'), hidden: true },
   {
-    path: '/',
+    path: '',
+    icon: 'table',
     component: Layout,
     redirect: '/dashboard',
     name: 'Dashboard',
-    hidden: true,
-    children: [{ path: 'dashboard', component: _import('dashboard/index') }]
+    noDropdown: true,
+    children: [{ path: 'dashboard', name: '首页', meta: { title: '首页' }, component: _import('dashboard/index') }]
   }
 ]
 
@@ -41,7 +42,7 @@ export const asyncRouterMap = [
     name: 'Goods',
     icon: 'table',
     noDropdown: true,
-    children: [{ path: 'goodsManage', name: 'GoodsManage', component: _import('goods/GoodsManage'), meta: { role: ['admin'] } }]
+    children: [{ path: 'goodsManage', name: '商品管理', meta: { title: '商品管理', role: ['admin'] }, component: _import('goods/GoodsManage') }]
   },
 
   { path: '*', redirect: '/404', hidden: true }

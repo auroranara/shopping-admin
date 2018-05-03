@@ -6,7 +6,7 @@
         <span class="svg-container svg-container_login">
           <icon-svg icon-class="yonghuming" />
         </span>
-        <el-input name="account" type="text" v-model="loginForm.account" autoComplete="on" placeholder="邮箱" />
+        <el-input name="account" type="text" v-model="loginForm.account" autoComplete="on" placeholder="账号" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { getToken } from '@/utils/auth' // 验权
 export default {
   name: 'login',
   data() {
@@ -39,20 +40,25 @@ export default {
       loading: false
     }
   },
+  created() {
+    console.log(getToken())
+  },
   methods: {
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
           this.loading = true
-          this.$store
-            .dispatch('Login', this.loginForm)
-            .then(() => {
-              this.loading = false
-              this.$router.push({ path: '/' })
+          await this.$store.dispatch('Login', this.loginForm)
+          if (this.$store.state.user.token) {
+            this.loading = false
+            this.$router.push({ path: '/' })
+          } else {
+            this.$message({
+              message: '账号或密码错误',
+              type: 'error',
+              duration: 5 * 1000
             })
-            .catch(() => {
-              this.loading = false
-            })
+          }
         } else {
           console.log('error submit!!')
           return false

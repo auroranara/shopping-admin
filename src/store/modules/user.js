@@ -1,12 +1,10 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login, fetchUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
   state: {
     token: getToken(),
     userInfo: {},
-    name: '',
-    avatar: '',
     roles: []
   },
 
@@ -14,14 +12,11 @@ const user = {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_NAME: (state, name) => {
-      state.name = name
-    },
-    SET_AVATAR: (state, avatar) => {
-      state.avatar = avatar
-    },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SER_USERINFO: (state, userInfo) => {
+      state.userInfo = userInfo
     }
   },
 
@@ -29,33 +24,34 @@ const user = {
     // 登录
     async Login({ commit }, userInfo) {
       const res = await login(userInfo.account, userInfo.password)
-      if (res.data.status === '0') {
-        setToken(res.data.token)
-        commit('SET_TOKEN', res.data.token)
+      if (res.token) {
+        setToken(res.token)
+        commit('SET_TOKEN', res.token)
       }
     },
 
     // 获取用户信息
     async GetInfo({ commit, state }) {
-      const res = await getInfo(state.token)
-      if (res.data.status === '0') {
-        commit('SET_ROLES', res.data.role)
-        commit('SET_NAME', res.data.name)
-        commit('SET_AVATAR', res.data.avatar)
+      const res = await fetchUserInfo(state.token)
+      if (res.status && res.status === '0') {
+        commit('SET_ROLES', res.role)
+        commit('SER_USERINFO', res.userInfo)
+        return res
       }
     },
 
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          removeToken()
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        // logout(state.token).then(() => {
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        commit('SER_USERINFO', {})
+        removeToken()
+        resolve()
+        // }).catch(error => {
+        //   reject(error)
+        // })
       })
     },
 
@@ -63,6 +59,7 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
+        commit('SER_USERINFO', {})
         removeToken()
         resolve()
       })

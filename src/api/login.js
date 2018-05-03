@@ -11,7 +11,7 @@ export function login(account, password) {
   })
 }
 
-export function getInfo(token) {
+export function fetchUserInfo() {
   return fetch({
     url: '/nodeapi/users/fetchUserInfo',
     method: 'get'
