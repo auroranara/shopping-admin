@@ -2,7 +2,13 @@
   <div class="goods-manage">
     <el-row>
       <el-button @click="handleCreate" type="primary">添加</el-button>
-      <el-input placeholder="名称" v-model="listQuery.productName"></el-input>
+      <el-input style="width:200px;" placeholder="名称" v-model="listQuery.productName"></el-input>
+      <el-select v-model="listQuery.type" placeholder="请选择">
+        <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
+      <el-button @click="getGoodsList" type="primary" plain icon="el-icon-search">搜索</el-button>
+      <el-button @click="getGoodsList" type="primary" plain icon="el-icon-search"></el-button>
     </el-row>
     <el-table class="mt20" :data="goodsList" style="width: 100%" border>
       <el-table-column prop="productName" label="商品名称" width="300" align="center">
@@ -25,31 +31,52 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.pageNum" :page-sizes="[1, 20, 30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+    <el-pagination class="mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.pageNum" :page-sizes="[1, 20, 30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
   </div>
 </template>
 
 <script>
+import { adminFetchGoods } from '@/api/goods'
 export default {
   name: 'GoodsManage',
   data() {
     return {
-      goodsList: [{ productName: '11', productPrice: '22', totalNum: 12 }],
+      typeOptions: [
+        { id: 'toy', value: '玩具' },
+        { id: 'food', value: '食物' },
+        { id: 'food', value: '喂养' },
+        { id: 'medicine', value: '医疗' },
+        { id: 'dailyuse', value: '生活用品' }
+      ],
+      goodsList: [],
       total: 0,
-      listQuery: { pageNum: 1, pageSize: 1 }
+      listQuery: { pageNum: 1, pageSize: 1, productName: null, type: null }
     }
   },
-  created() {},
+  created() {
+    this.init()
+  },
   methods: {
+    async init() {
+      await this.getGoodsList()
+    },
+    async getGoodsList() {
+      const res = await adminFetchGoods(this.listQuery)
+      if (res.data.status && res.data.status === '0') {
+        this.goodsList = res.data.list.rows
+      }
+    },
     handleCreate() {},
     handleEdit() {},
     handleDelete() {},
     handleSizeChange(val) {
       this.listQuery.pageSize = val
+      this.getGoodsList()
     },
     handleCurrentChange(val) {
       this.listQuery.pageNum = val
+      this.getGoodsList()
     }
   }
 }
