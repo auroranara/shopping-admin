@@ -25,7 +25,14 @@ export const constantRouterMap = [
     redirect: '/dashboard',
     name: 'Dashboard',
     noDropdown: true,
-    children: [{ path: 'dashboard', name: '首页', meta: { title: '首页' }, component: _import('dashboard/index') }]
+    children: [{ path: 'dashboard', name: '首页', meta: { title: '首页', role: ['admin'] }, component: _import('dashboard/index') }]
+  },
+  {
+    path: '/goods',
+    component: Layout,
+    icon: 'table',
+    noDropdown: true,
+    children: [{ path: 'goodsManage', name: '商品管理', meta: { title: '商品管理', role: ['admin'] }, component: _import('goods/GoodsManage') }]
   }
 ]
 
@@ -37,13 +44,11 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
-    path: '/goods',
-    component: Layout,
-    name: 'Goods',
+    path: '/account',
     icon: 'table',
+    component: Layout,
     noDropdown: true,
-    children: [{ path: 'goodsManage', name: '商品管理', meta: { title: '商品管理', role: ['admin'] }, component: _import('goods/GoodsManage') }]
+    children: [{ path: 'accountManage', name: '账户管理', meta: { title: '用户管理', role: ['superAdmin'] }, component: _import('account/AccountManage') }]
   },
-
   { path: '*', redirect: '/404', hidden: true }
 ]

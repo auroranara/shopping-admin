@@ -2,7 +2,7 @@ import fetch from '@/utils/fetch'
 
 export function login(account, password) {
   return fetch({
-    url: '/nodeapi/users/login',
+    url: '/nodeapi/users/adminLogin',
     method: 'post',
     data: {
       account,

@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getToken } from '@/utils/auth' // 验权
+// import { getToken } from '@/utils/auth' // 验权
 export default {
   name: 'login',
   data() {
@@ -40,9 +40,7 @@ export default {
       loading: false
     }
   },
-  created() {
-    console.log(getToken())
-  },
+  created() {},
   methods: {
     handleLogin() {
       this.$refs.loginForm.validate(async valid => {
@@ -50,8 +48,12 @@ export default {
           this.loading = true
           await this.$store.dispatch('Login', this.loginForm)
           if (this.$store.state.user.token) {
-            this.loading = false
             this.$router.push({ path: '/' })
+            this.$message({
+              message: '登陆成功',
+              type: 'success',
+              duration: 5 * 1000
+            })
           } else {
             this.$message({
               message: '账号或密码错误',
@@ -59,6 +61,7 @@ export default {
               duration: 5 * 1000
             })
           }
+          this.loading = false
         } else {
           console.log('error submit!!')
           return false
