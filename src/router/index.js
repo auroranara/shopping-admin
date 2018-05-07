@@ -54,8 +54,11 @@ export const asyncRouterMap = [
     path: '/bill',
     icon: 'table',
     component: Layout,
-    noDropdown: true,
-    children: []
+    name: '利润',
+    children: [
+      { path: 'costManage', name: '成本管控', meta: { title: '成本管控', role: ['superAdmin'] }, component: _import('bill/CostManage') },
+      { path: 'orderManage', name: '订单管理', meta: { title: '订单管理', role: ['superAdmin'] }, component: _import('bill/OrderManage') }
+    ]
   },
   { path: '*', redirect: '/404', hidden: true }
 ]

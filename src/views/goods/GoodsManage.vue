@@ -1,46 +1,48 @@
 <template>
   <div class="goods-manage">
-    <el-row>
-      <el-button @click="handleCreate" type="primary">添加</el-button>
-      <el-input style="width:200px;" placeholder="名称" v-model="listQuery.productName"></el-input>
-      <el-select v-model="listQuery.type" placeholder="请选择">
-        <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-button @click="getGoodsList" type="primary" plain icon="el-icon-search">搜索</el-button>
-      <el-button @click="ResetListQuery" type="primary" plain>重置筛选</el-button>
-      <el-switch style="margin-left:20px;" v-model="listQuery.state" @change="handleStateFilter" active-text="已上架" inactive-text="已下架">
-      </el-switch>
-    </el-row>
-    <el-table v-loading="tableLoading" element-loading-text="拼命加载中" class="mt20" :data="goodsList" style="width: 100%" border>
-      <el-table-column prop="productName" label="商品名称" width="300" align="center">
-      </el-table-column>
-      <el-table-column prop="productPrice" label="价格(元)" width="150" align="center">
-      </el-table-column>
-      <el-table-column prop="totalNum" label="库存" width="180" align="center">
-      </el-table-column>
-      <el-table-column label="种类" width="180" align="center">
-        <template slot-scope="scope">
-          {{scope.row.type|typeFilter}}
-        </template>
-      </el-table-column>
-      <el-table-column prop="desc" label="备注" width="250" align="center">
-      </el-table-column>
-      <el-table-column label="状态" width="180" align="center">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.state===1?'success':'info'">{{scope.row.state|stateFilter}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" min-width="200" align="center">
-        <template slot-scope="scope">
-          <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button v-if="scope.row.state" type="text" @click="handleDown(scope.row.productId)">下架</el-button>
-          <el-button v-else type="text" @click="handleUp(scope.row.productId)">上架</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination class="mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.pageNum" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-    </el-pagination>
+    <el-card class="card-container">
+      <el-row>
+        <el-button @click="handleCreate" type="primary">添加</el-button>
+        <el-input style="width:200px;" placeholder="名称" v-model="listQuery.productName"></el-input>
+        <el-select v-model="listQuery.type" placeholder="请选择">
+          <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button @click="getGoodsList" type="primary" plain icon="el-icon-search">搜索</el-button>
+        <el-button @click="ResetListQuery" type="primary" plain>重置筛选</el-button>
+        <el-switch style="margin-left:20px;" v-model="listQuery.state" @change="handleStateFilter" active-text="已上架" inactive-text="已下架">
+        </el-switch>
+      </el-row>
+      <el-table v-loading="tableLoading" element-loading-text="拼命加载中" class="mt20" :data="goodsList" style="width: 100%" border>
+        <el-table-column prop="productName" label="商品名称" width="300" align="center">
+        </el-table-column>
+        <el-table-column prop="productPrice" label="价格(元)" width="150" align="center">
+        </el-table-column>
+        <el-table-column prop="totalNum" label="库存" width="180" align="center">
+        </el-table-column>
+        <el-table-column label="种类" width="180" align="center">
+          <template slot-scope="scope">
+            {{scope.row.type|typeFilter}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="desc" label="备注" width="250" align="center">
+        </el-table-column>
+        <el-table-column label="状态" width="180" align="center">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.state===1?'success':'info'">{{scope.row.state|stateFilter}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" min-width="200" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button v-if="scope.row.state" type="text" @click="handleDown(scope.row.productId)">下架</el-button>
+            <el-button v-else type="text" @click="handleUp(scope.row.productId)">上架</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination class="mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.pageNum" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </el-card>
     <el-dialog title="商品管理" :visible.sync="dialogVisible" :before-close="handleClose" width="700px">
       <el-form style="margin-left:50px;" ref="tempForm" :model="form" label-position="left" label-width="120px" :rules="rules">
         <el-form-item label="商品名称：" prop="productName">
@@ -62,7 +64,7 @@
           <el-input style="width:400px;" type="textarea" v-model.trim="form.desc"></el-input>
         </el-form-item>
         <el-form-item label="展示图片：" prop="imagesList">
-          <el-upload class="upload-demo" action="/nodeapi/goods/uploadGoodsImg" name="goodsImg" :headers="headers" :on-success="handleUploadSuccess" :on-remove="handleRemove" :before-upload="beforeImgUpload" :file-list="this.form.imagesList" list-type="picture">
+          <el-upload style="width:400px;" class="upload-demo" action="/nodeapi/goods/uploadGoodsImg" name="goodsImg" :headers="headers" :on-success="handleUploadSuccess" :on-remove="handleRemove" :before-upload="beforeImgUpload" :file-list="this.form.imagesList" list-type="picture">
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
@@ -369,6 +371,9 @@ export default {
 <style lang="scss">
 .goods-manage {
   padding: 20px;
+  .card-container {
+    border-radius: 9px;
+  }
   .mt20 {
     margin-top: 20px;
   }
