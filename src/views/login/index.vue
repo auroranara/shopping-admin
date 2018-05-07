@@ -24,7 +24,6 @@
 </template>
 
 <script>
-// import { getToken } from '@/utils/auth' // 验权
 export default {
   name: 'login',
   data() {

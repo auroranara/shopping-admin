@@ -13,13 +13,6 @@ router.beforeEach(async (to, from, next) => {
       next({ path: '/' })
     } else {
       if (store.getters.roles.length === 0) {
-        /* store.dispatch('GetInfo').then(res => {
-          const roles = res.role
-          store.dispatch('GenerateRoutes', { roles }).then(() => {
-            router.addRoutes(store.getters.addRouters)
-            next({ ...to })
-          })
-        }) */
         const res = await store.dispatch('GetInfo')
         if (res.status && res.status === '0') {
           const roles = res.role

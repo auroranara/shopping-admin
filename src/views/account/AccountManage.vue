@@ -210,7 +210,6 @@ export default {
           const res = await deleteAccount({ id: id })
           if (res.status && res.status === '0') {
             this.getAccountList()
-            this.resetForm()
           }
           this.$message({
             type: res.status === '0' ? 'success' : 'error',

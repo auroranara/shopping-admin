@@ -31,3 +31,11 @@ export function updateGoods(data) {
     data
   })
 }
+
+export function changeGoodsState(data) {
+  return fetch({
+    url: '/nodeapi/goods/changeGoodsState',
+    method: 'get',
+    params: data
+  })
+}

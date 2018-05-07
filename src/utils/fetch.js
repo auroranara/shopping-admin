@@ -39,18 +39,9 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
     } else {
-      return response.data
+      return response.data  // 重新包装返回数据
     }
   },
-  // error => {
-  //   console.log('err' + error)// for debug
-  //   Message({
-  //     message: error.message,
-  //     type: 'error',
-  //     duration: 5 * 1000
-  //   })
-  //   return Promise.reject(error)
-  // }
   async error => {
     if (error.response) {
       switch (error.response.status) {

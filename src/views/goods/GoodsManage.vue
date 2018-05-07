@@ -8,7 +8,9 @@
         </el-option>
       </el-select>
       <el-button @click="getGoodsList" type="primary" plain icon="el-icon-search">搜索</el-button>
-      <el-button @click="ResetListQuery" type="primary" plain>重置</el-button>
+      <el-button @click="ResetListQuery" type="primary" plain>重置筛选</el-button>
+      <el-switch style="margin-left:20px;" v-model="listQuery.state" @change="handleStateFilter" active-text="已上架" inactive-text="已下架">
+      </el-switch>
     </el-row>
     <el-table v-loading="tableLoading" element-loading-text="拼命加载中" class="mt20" :data="goodsList" style="width: 100%" border>
       <el-table-column prop="productName" label="商品名称" width="300" align="center">
@@ -24,10 +26,16 @@
       </el-table-column>
       <el-table-column prop="desc" label="备注" width="250" align="center">
       </el-table-column>
+      <el-table-column label="状态" width="180" align="center">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.state===1?'success':'info'">{{scope.row.state|stateFilter}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" min-width="200" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button type="text" @click="handleDelete">下架</el-button>
+          <el-button v-if="scope.row.state" type="text" @click="handleDown(scope.row.productId)">下架</el-button>
+          <el-button v-else type="text" @click="handleUp(scope.row.productId)">上架</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -79,7 +87,8 @@ import {
   adminFetchGoods,
   checkGoodsName,
   createGoods,
-  updateGoods
+  updateGoods,
+  changeGoodsState
 } from '@/api/goods'
 import { mapState } from 'vuex'
 export default {
@@ -109,7 +118,13 @@ export default {
       dialogVisible: false,
       goodsList: [],
       total: 0,
-      listQuery: { pageNum: 1, pageSize: 10, productName: null, type: null },
+      listQuery: {
+        pageNum: 1,
+        pageSize: 10,
+        productName: null,
+        type: null,
+        state: true
+      },
       typeOptions: [
         { value: 'toy', label: '玩具' },
         { value: 'food', label: '喂养' },
@@ -167,6 +182,11 @@ export default {
     typeFilter(value) {
       const result = typeOptions.find(item => item.value === value)
       return result ? result.label : ''
+    },
+    stateFilter(state) {
+      const states = [{ id: 1, value: '已上架' }, { id: 0, value: '已下架' }]
+      const result = states.find(item => item.id === state)
+      return result ? result.value : ''
     }
   },
   created() {
@@ -190,7 +210,8 @@ export default {
         pageNum: 1,
         pageSize: 10,
         productName: null,
-        type: null
+        type: null,
+        state: false
       }
       this.getGoodsList()
     },
@@ -231,7 +252,42 @@ export default {
       this.isCreate = false
       this.dialogVisible = true
     },
-    handleDelete() {},
+    handleDown(productId) {
+      this.$confirm('确认下架该商品吗', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          const res = await changeGoodsState({ productId: productId })
+          if (res.status && res.status === '0') {
+            this.getGoodsList()
+          }
+          this.$message({
+            type: res.status === '0' ? 'success' : 'error',
+            message: res.msg
+          })
+        })
+        .catch(() => {})
+    },
+    handleUp(productId) {
+      this.$confirm('确认上架该商品吗', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          const res = await changeGoodsState({ productId: productId })
+          if (res.status && res.status === '0') {
+            this.getGoodsList()
+          }
+          this.$message({
+            type: res.status === '0' ? 'success' : 'error',
+            message: res.msg
+          })
+        })
+        .catch(() => {})
+    },
     doUpdateGoods() {
       this.$refs.tempForm.validate(async valid => {
         if (valid) {
@@ -275,6 +331,11 @@ export default {
           })
         }
       })
+    },
+    handleStateFilter() {
+      this.listQuery.pageNum = 1
+      this.listQuery.pageSize = 10
+      this.getGoodsList()
     },
     handleSizeChange(val) {
       this.listQuery.pageSize = val
