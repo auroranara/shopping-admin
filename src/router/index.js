@@ -50,5 +50,12 @@ export const asyncRouterMap = [
     noDropdown: true,
     children: [{ path: 'accountManage', name: '账户管理', meta: { title: '用户管理', role: ['superAdmin'] }, component: _import('account/AccountManage') }]
   },
+  {
+    path: '/bill',
+    icon: 'table',
+    component: Layout,
+    noDropdown: true,
+    children: []
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
