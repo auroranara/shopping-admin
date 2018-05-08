@@ -8,7 +8,7 @@
     <el-row style="margin-top:20px">
       <el-col style="border:1px solid #dfe6ec;padding:14px;color:#1f2d3d;">
         <el-row>
-          <el-col :span="8">总收入：{{result.income}}</el-col>
+          <el-col :span="8">总交易额：{{result.income}}</el-col>
           <el-col :span="8">总成本：{{result.cost}}</el-col>
           <el-col :span="8">总利润：{{result.profit}}</el-col>
         </el-row>
@@ -41,7 +41,7 @@
             {{scope.row.createDate|timeFilter}}
           </template>
         </el-table-column>
-        <el-table-column label="金额" prop="payment" align="center">
+        <el-table-column label="交易金额" prop="payment" align="center">
         </el-table-column>
         <el-table-column label="订单状态" align="center">
           <template slot-scope="scope">
@@ -54,6 +54,8 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination class="mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.pageNum" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
     </el-card>
     <el-dialog title="商品清单" :visible.sync="dialogVisible" :before-close="handleClose" width="700px">
       <el-table :data="productsList" style="height:400px;">
@@ -83,7 +85,8 @@ export default {
   name: 'orderList',
   data() {
     return {
-      result: { income: 123, cost: 12, profit: 12 },
+      total: 0,
+      result: { income: 0, cost: 0, profit: 0 },
       productsList: [],
       dialogVisible: false,
       tableLoading: false,
@@ -117,6 +120,8 @@ export default {
       const res = await adminFetchOrders(this.listQuery)
       if (res.status && res.status === '0') {
         this.orderList = res.list.rows
+        this.total = res.list.count
+        this.result = res.bill
       }
     },
     async handleViewProducts(orderId) {
@@ -127,10 +132,13 @@ export default {
       }
     },
     handleFilter() {
-      if (this.listQuery.dateRange.length) {
+      if (this.listQuery.dateRange && this.listQuery.dateRange.length) {
         const [start, end] = this.listQuery.dateRange
         this.listQuery.startTime = start / 1000
         this.listQuery.endTime = end / 1000
+      } else {
+        this.listQuery.startTime = null
+        this.listQuery.endTime = null
       }
       this.getOrderList()
     },
@@ -141,6 +149,14 @@ export default {
     handleClose() {
       this.dialogVisible = false
       this.productsList = []
+    },
+    handleSizeChange(val) {
+      this.listQuery.pageSize = val
+      this.getOrderList()
+    },
+    handleCurrentChange(val) {
+      this.listQuery.pageNum = val
+      this.getOrderList()
     }
   }
 }
@@ -148,6 +164,9 @@ export default {
 <style lang="scss">
 .order-manage {
   padding: 20px;
+  .mt20 {
+    margin-top: 20px;
+  }
   .card-container {
     margin-top: 20px;
     border-radius: 9px;
