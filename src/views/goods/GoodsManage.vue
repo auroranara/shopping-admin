@@ -57,6 +57,9 @@
         <el-form-item label="商品价格：" prop="productPrice">
           <el-input style="width:400px;" v-model.number="form.productPrice"></el-input>
         </el-form-item>
+        <el-form-item label="进货价格：" prop="productCost">
+          <el-input style="width:400px;" v-model.number="form.productCost"></el-input>
+        </el-form-item>
         <el-form-item label="库存：" prop="totalNum">
           <el-input-number style="width:400px;" v-model.number="form.totalNum" :min="1"></el-input-number>
         </el-form-item>
@@ -141,7 +144,8 @@ export default {
         imagesList: [],
         desc: null,
         totalNum: null,
-        type: null
+        type: null,
+        productCost: null
       },
       rules: {
         productName: [
@@ -153,6 +157,14 @@ export default {
             type: 'number',
             required: true,
             message: '请输入商品价格',
+            trigger: 'blur'
+          }
+        ],
+        productCost: [
+          {
+            type: 'number',
+            required: true,
+            message: '请输入进货价格',
             trigger: 'blur'
           }
         ],
@@ -353,6 +365,7 @@ export default {
       this.resetForm()
     },
     resetForm() {
+      this.$refs.tempForm.resetFields()
       this.form = {
         productName: null,
         productPrice: null,
@@ -361,7 +374,8 @@ export default {
         imagesList: [],
         desc: null,
         totalNum: null,
-        type: null
+        type: null,
+        productCost: null
       }
     }
   }
