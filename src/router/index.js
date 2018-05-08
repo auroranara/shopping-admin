@@ -25,7 +25,18 @@ export const constantRouterMap = [
     redirect: '/dashboard',
     name: 'Dashboard',
     noDropdown: true,
-    children: [{ path: 'dashboard', name: '首页', meta: { title: '首页', role: ['admin'] }, component: _import('dashboard/index') }]
+    children: [{ path: 'dashboard', name: '统计', meta: { title: '统计', role: ['admin'] }, component: _import('dashboard/index') }]
+  },
+  {
+    path: '/setting',
+    icon: 'table',
+    component: Layout,
+    name: '首页控制',
+    children: [
+      { path: 'carouselManage', name: '轮播图管理', meta: { title: '轮播图管理', role: ['admin'] }, component: _import('setting/CarouselManage') },
+      { path: 'hotGoodsManage', name: '热卖商品', meta: { role: ['admin'] }, component: _import('setting/HotGoodsManage') },
+      { path: 'customGoodsManage', name: '自定义模块', meta: { role: ['admin'] }, component: _import('setting/CustomGoodsManage') }
+    ]
   },
   {
     path: '/goods',
