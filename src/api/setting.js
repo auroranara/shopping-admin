@@ -39,3 +39,10 @@ export function checkSettingId(data) {
     params: data
   })
 }
+
+export function fetchDashboardData() {
+  return fetch({
+    url: '/nodeapi/setting/fetchDashboardData',
+    method: 'get'
+  })
+}

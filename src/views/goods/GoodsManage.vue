@@ -225,7 +225,7 @@ export default {
         pageSize: 10,
         productName: null,
         type: null,
-        state: false
+        state: true
       }
       this.getGoodsList()
     },

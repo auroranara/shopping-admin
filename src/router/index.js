@@ -44,15 +44,6 @@ export const constantRouterMap = [
     icon: 'table',
     noDropdown: true,
     children: [{ path: 'goodsManage', name: '商品管理', meta: { title: '商品管理', role: ['admin'] }, component: _import('goods/GoodsManage') }]
-  },
-  {
-    path: '/bill',
-    icon: 'table',
-    component: Layout,
-    name: '利润',
-    children: [
-      { path: 'orderManage', name: '订单管理', meta: { title: '订单管理', role: ['admin'] }, component: _import('bill/OrderManage') }
-    ]
   }
 ]
 
@@ -69,6 +60,15 @@ export const asyncRouterMap = [
     component: Layout,
     noDropdown: true,
     children: [{ path: 'accountManage', name: '账户管理', meta: { title: '用户管理', role: ['superAdmin'] }, component: _import('account/AccountManage') }]
+  },
+  {
+    path: '/bill',
+    icon: 'table',
+    component: Layout,
+    name: '利润',
+    children: [
+      { path: 'orderManage', name: '订单管理', meta: { title: '订单管理', role: ['superAdmin'] }, component: _import('bill/OrderManage') }
+    ]
   },
   { path: '*', redirect: '/404', hidden: true }
 ]

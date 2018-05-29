@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px" class="card-box login-form">
-      <h3 class="title">系统登录</h3>
+      <h3 class="title">商城后台管理登录</h3>
       <el-form-item prop="account">
         <span class="svg-container svg-container_login">
           <icon-svg icon-class="yonghuming" />
