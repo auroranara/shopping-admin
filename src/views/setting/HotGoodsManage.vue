@@ -65,7 +65,7 @@ export default {
       dialogVisible: false,
       listQuery: {
         pageNum: 1,
-        pageSize: 6,
+        pageSize: 5,
         productName: null
       }
     }
